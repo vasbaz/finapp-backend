@@ -1,4 +1,4 @@
-import enum
+from enum import Enum
 
 from httpx import AsyncClient
 
@@ -9,8 +9,8 @@ CMC_API_URL = "https://pro-api.coinmarketcap.com"
 API_KEY_HEADER = "X-CMC_PRO_API_KEY"
 
 
-class CMCApis(enum.Enum):
-    map = CMC_API_URL + "/v1/cryptocurrency/map"
+class CMCApis(str, Enum):
+    MAP = CMC_API_URL + "/v1/cryptocurrency/map"
 
 
 class CMCRepository:
@@ -18,8 +18,10 @@ class CMCRepository:
         self.auth_header = {API_KEY_HEADER: api_key}
 
     async def get_maps(self) -> list[CMCMap]:
-        async with AsyncClient() as ac:
-            maps_response = await ac.get(CMCApis.map.value, headers=self.auth_header)
+        async with AsyncClient() as client:
+            maps_response = await client.get(
+                CMCApis.MAP.value, headers=self.auth_header
+            )
 
         status_code = maps_response.status_code
         if status_code == 200:
@@ -28,7 +30,7 @@ class CMCRepository:
             return maps
 
         raise InternalAppClientApiException(
-            api_name=CMCApis.map.name,
+            api_name=CMCApis.MAP.name,
             http_code=status_code,
             raw_response=maps_response.text,
         )

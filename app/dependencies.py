@@ -4,5 +4,5 @@ from app.config import Settings
 
 
 @lru_cache()
-def settings() -> Settings:
+def app_settings() -> Settings:
     return Settings()
