@@ -1,4 +1,4 @@
-from app.models.app_exception import AppException, InternalAppClientApiException
+from app.types.app_exception import AppException, InternalAppClientApiException
 
 DIVIDER = "===+++==="
 

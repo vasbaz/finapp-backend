@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class CMCPlatform(BaseModel):
+class CMCPlatformSchema(BaseModel):
     id: int = Field(example=1027)
     name: str = Field(example="Ethereum")
     symbol: str = Field(example="ETH")

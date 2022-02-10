@@ -2,8 +2,8 @@ from fastapi import FastAPI, Depends
 from starlette.responses import PlainTextResponse
 
 from .dependencies import app_settings
-from .models.app_exception import InternalAppClientApiException
-from .routers import direct_data
+from .types.app_exception import InternalAppClientApiException
+from .routers import direct_cmc_data
 from .utils.app_log import app_log
 
 app = FastAPI(
@@ -12,7 +12,7 @@ app = FastAPI(
     dependencies=[Depends(app_settings)],
 )
 
-app.include_router(direct_data.router)
+app.include_router(direct_cmc_data.router)
 
 
 @app.exception_handler(InternalAppClientApiException)
