@@ -12,12 +12,7 @@ from app.db.base import Base
 
 config = context.config
 section = config.config_ini_section
-config.set_section_option(section, "POSTGRES_USER", environ.get("POSTGRES_USER"))
-config.set_section_option(
-    section, "POSTGRES_PASSWORD", environ.get("POSTGRES_PASSWORD")
-)
-config.set_section_option(section, "POSTGRES_DB", environ.get("POSTGRES_DB"))
-config.set_section_option(section, "POSTGRES_SERVER", environ.get("POSTGRES_SERVER"))
+config.set_section_option(section, "DATABASE_URL", environ.get("DATABASE_URL"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
