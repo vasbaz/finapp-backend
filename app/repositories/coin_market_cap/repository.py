@@ -1,11 +1,13 @@
 from enum import Enum
+from typing import Any
 
 from httpx import AsyncClient
 from pydantic import parse_obj_as
 
 from .schemas.map import CMCMapSchema
-from .schemas.metadata import CMCMetadataSchema
-from ...types.app_exception import InternalAppClientApiException
+from .schemas.metadata_response import CMCMetadataResponse
+from app.types.app_exception import InternalAppClientApiException
+from ...config import settings
 
 CMC_API_URL = "https://pro-api.coinmarketcap.com"
 API_KEY_HEADER = "X-CMC_PRO_API_KEY"
@@ -20,7 +22,7 @@ class CMCRepository:
     def __init__(self, api_key: str):
         self.auth_header = {API_KEY_HEADER: api_key}
 
-    async def __get_data(self, api: CMCApis, parsing_type):
+    async def __get_data(self, api: CMCApis, parsing_type: Any) -> Any:
         async with AsyncClient() as client:
             api_response = await client.get(api.value, headers=self.auth_header)
 
@@ -44,5 +46,8 @@ class CMCRepository:
     async def get_maps(self) -> list[CMCMapSchema]:
         return await self.__get_data(CMCApis.MAP, CMCMapSchema)
 
-    async def get_metadata(self) -> list[dict[str, CMCMetadataSchema]]:
-        return await self.__get_data(CMCApis.METADATA, dict[str, CMCMetadataSchema])
+    async def get_metadata(self) -> list[CMCMetadataResponse]:
+        return await self.__get_data(CMCApis.METADATA, CMCMetadataResponse)
+
+
+main_cmc_repository = CMCRepository(api_key=settings.CMC_API_KEY)

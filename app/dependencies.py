@@ -1,8 +1,19 @@
-from functools import lru_cache
+from typing import Generator
 
-from app.config import Settings
+from app.db.database import session_local
+from app.repositories.coin_market_cap.repository import (
+    main_cmc_repository,
+    CMCRepository,
+)
 
 
-@lru_cache()
-def app_settings() -> Settings:
-    return Settings()
+def get_db() -> Generator:
+    db = session_local()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def get_main_cmc_repository() -> CMCRepository:
+    return main_cmc_repository

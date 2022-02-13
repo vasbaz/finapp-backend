@@ -3,7 +3,7 @@ from app.types.app_exception import AppException, InternalAppClientApiException
 DIVIDER = "===+++==="
 
 
-def app_log(message: str | None = None, exception: AppException | None = None):
+def app_log(message: str | None = None, exception: AppException | None = None) -> None:
     print(DIVIDER)
     print("APP LOG")
     if message is not None:
