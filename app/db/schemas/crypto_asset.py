@@ -1,11 +1,12 @@
 from pydantic import BaseModel
 
-from .assets_url import AssetUrls
+from .asset_urls import AssetUrls
 
 
 class CryptoAssetBase(BaseModel):
     name: str
     ticker: str
+    cmc_id: int
 
 
 class CryptoAssetCreate(CryptoAssetBase):
@@ -14,7 +15,7 @@ class CryptoAssetCreate(CryptoAssetBase):
 
 class CryptoAsset(CryptoAssetBase):
     id: int
-    urls: list[AssetUrls]
+    urls: AssetUrls
 
     class Config:
         orm_mode = True

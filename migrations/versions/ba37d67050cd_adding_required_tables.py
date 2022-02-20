@@ -1,8 +1,8 @@
-"""Init with adding required tables
+"""Adding required tables
 
-Revision ID: 75ff309d2523
+Revision ID: ba37d67050cd
 Revises: 
-Create Date: 2022-02-13 14:26:50.109356
+Create Date: 2022-02-20 11:19:55.929111
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '75ff309d2523'
+revision = 'ba37d67050cd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,15 +22,17 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('ticker', sa.String(), nullable=True),
+    sa.Column('cmc_id', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cmc_id'),
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_crypto_assets_id'), 'crypto_assets', ['id'], unique=False)
     op.create_index(op.f('ix_crypto_assets_ticker'), 'crypto_assets', ['ticker'], unique=True)
     op.create_table('assets_urls',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('github', sa.String(), nullable=True),
     sa.Column('crypto_asset_id', sa.Integer(), nullable=True),
+    sa.Column('github', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['crypto_asset_id'], ['crypto_assets.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('github')

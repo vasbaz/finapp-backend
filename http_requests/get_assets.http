@@ -1,0 +1,2 @@
+GET http://127.0.0.1:8000/test_db_get_assets
+Accept: application/json

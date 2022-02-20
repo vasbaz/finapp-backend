@@ -11,6 +11,7 @@ from ...config import settings
 
 CMC_API_URL = "https://pro-api.coinmarketcap.com"
 API_KEY_HEADER = "X-CMC_PRO_API_KEY"
+ITEMS_LIMIT = 90
 
 
 class CMCApis(str, Enum):
@@ -22,19 +23,18 @@ class CMCRepository:
     def __init__(self, api_key: str):
         self.auth_header = {API_KEY_HEADER: api_key}
 
-    async def __get_data(self, api: CMCApis, parsing_type: Any) -> Any:
+    async def __get_data(
+        self, api: CMCApis, parsing_type: Any, query_params: dict = None
+    ) -> Any:
         async with AsyncClient() as client:
-            api_response = await client.get(api.value, headers=self.auth_header)
+            api_response = await client.get(
+                api.value, headers=self.auth_header, params=query_params
+            )
 
         status_code = api_response.status_code
         if status_code == 200:
             raw_json_api_response = api_response.json()
-            api_data = list(
-                map(
-                    lambda item: parse_obj_as(parsing_type, item),
-                    raw_json_api_response["data"],
-                )
-            )
+            api_data = parse_obj_as(parsing_type, raw_json_api_response["data"])
             return api_data
 
         raise InternalAppClientApiException(
@@ -44,10 +44,15 @@ class CMCRepository:
         )
 
     async def get_maps(self) -> list[CMCMapSchema]:
-        return await self.__get_data(CMCApis.MAP, CMCMapSchema)
+        return await self.__get_data(
+            CMCApis.MAP, list[CMCMapSchema], query_params={"limit": ITEMS_LIMIT}
+        )
 
-    async def get_metadata(self) -> list[CMCMetadataResponse]:
-        return await self.__get_data(CMCApis.METADATA, CMCMetadataResponse)
+    async def get_metadata(self, cmc_ids: list[str]) -> CMCMetadataResponse:
+        cmc_ids_string = ",".join(cmc_ids)
+        return await self.__get_data(
+            CMCApis.METADATA, CMCMetadataResponse, query_params={"id": cmc_ids_string}
+        )
 
 
 main_cmc_repository = CMCRepository(api_key=settings.CMC_API_KEY)

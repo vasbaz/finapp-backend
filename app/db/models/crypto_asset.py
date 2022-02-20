@@ -15,5 +15,6 @@ class CryptoAsset(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)
     ticker = Column(String, unique=True, index=True)
+    cmc_id = Column(Integer, unique=True)
 
-    urls = relationship("AssetUrls", back_populates="owner")
+    urls = relationship("AssetUrls", back_populates="owner", uselist=False)

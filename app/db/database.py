@@ -1,13 +1,13 @@
 from typing import Any
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.orm import sessionmaker
 
 from app.config import settings
 
-engine = create_engine(settings.POSTGRESQL_URL, pool_pre_ping=True)
-session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(settings.POSTGRESQL_URL)
+session_local = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
 @as_declarative()

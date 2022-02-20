@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class AssetUrlsBase(BaseModel):
+    crypto_asset_id: int
     github: str | None = None
 
 
@@ -11,7 +12,6 @@ class AssetUrlsCreate(AssetUrlsBase):
 
 class AssetUrls(AssetUrlsBase):
     id: int
-    crypto_asset_id: int
 
     class Config:
         orm_mode = True

@@ -1,4 +1,4 @@
-from typing import Generator
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import session_local
 from app.repositories.coin_market_cap.repository import (
@@ -7,12 +7,9 @@ from app.repositories.coin_market_cap.repository import (
 )
 
 
-def get_db() -> Generator:
-    db = session_local()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db() -> AsyncSession:
+    async with session_local() as session:
+        yield session
 
 
 def get_main_cmc_repository() -> CMCRepository:
